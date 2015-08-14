@@ -1,0 +1,20 @@
+<p>
+  Articles
+  <table style="width:50%">
+    <tr>
+      <td>Site</td>
+      <td>Site Address</td>
+      <td>Description</td>
+    </tr>
+    <tr><td> </td></tr>
+      <% sites.each do |site| %>
+      <tr>
+        <td><%= site[0] %></td>
+        <td><a href="<%= site[1] %>"><%= site[1] %></a></td>
+        <td><%= site[2] %></td>
+      </tr>
+      <% end %>
+    </tr>
+  </table>
+</p>
+<a href="articles/new">Post a new article</a>
