@@ -1,13 +1,22 @@
 require 'sinatra'
 require 'csv'
+require 'pg'
 require 'pry'
 
-get '/articles' do
-  sites = []
-  CSV.foreach('sites.csv') do |row|
-    sites << row
+def db_connection
+  begin
+    connection = PG.connect(dbname: "news_aggregator_development")
+    yield(connection)
+  ensure
+    connection.close
   end
-  erb :index, locals: { sites: sites }
+end
+
+get '/articles' do
+  db_connection do |conn|
+    sites = conn.exec('SELECT * FROM articles')
+    erb :index, locals: { sites: sites }
+  end
 end
 
 get '/articles/new' do
@@ -20,18 +29,10 @@ post '/articles/new' do
   site_address = params["site_address"]
   description = params["description"]
 
-  # Open the "sites.csv" file and append the task
-  File.open("sites.csv", "a") do |file|
-    file.puts(new_site + ',' + site_address + ',' + description)
+  db_connection do |conn|
+    conn.exec_params("INSERT INTO articles (new_site, site_address, description) VALUES ($1, $2, $3)", [new_site, site_address, description]);
   end
 
-  # url_exists = false
-	#   posts = CSV.foreach("posts.csv", headers:true) do |row|
-	#     url_exists = true if row.field?(params["url"])
-	#   end
-
-  # Send the user back to the home page which shows
-  # the list of sites
   redirect '/articles'
 end
 

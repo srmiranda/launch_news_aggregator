@@ -9,9 +9,9 @@
     <tr><td> </td></tr>
       <% sites.each do |site| %>
       <tr>
-        <td><%= site[0] %></td>
-        <td><a href="<%= site[1] %>"><%= site[1] %></a></td>
-        <td><%= site[2] %></td>
+        <td><%= site["new_site"] %></td>
+        <td><a href="<%= site["site_address"] %>"><%= site["site_address"] %></a></td>
+        <td><%= site["description"] %></td>
       </tr>
       <% end %>
     </tr>
